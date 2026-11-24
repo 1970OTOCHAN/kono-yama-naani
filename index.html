@@ -31,6 +31,7 @@ body[data-rot="90"] #hint,body[data-rot="-90"] #hint{display:none!important}
 #bar button span{display:inline-block;transition:transform .25s}
 body[data-rot="90"] #bar button span{transform:rotate(90deg)}
 body[data-rot="-90"] #bar button span{transform:rotate(-90deg)}
+body[data-rot="-90"] #bar{top:0;bottom:auto;padding:calc(env(safe-area-inset-top) + 12px) 12px 10px}
 body[data-rot="90"] #top,body[data-rot="-90"] #top,body[data-rot="90"] #ver,body[data-rot="-90"] #ver{visibility:hidden}
 #bQuit{background:#A32D2D!important;border-radius:8px}
 #bZoom{border:1px solid #fff!important;border-radius:8px}
@@ -94,7 +95,7 @@ video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
   ・標高：国土地理院 標高タイル／山名：国土地理院「日本の山岳標高一覧（1003山）」</div>
 
   <button id="go">同意してスタート</button>
-  <p class="cr">Ver 1.8　この山なぁ〜に？™ © 2026 1970 OTOCHAN</p>
+  <p class="cr">Ver 1.9　この山なぁ〜に？™ © 2026 1970 OTOCHAN</p>
 </div>
 <div id="rot">画面の自動回転をオフにしてください<br><small>（横に持っても使えます）</small></div>
 
@@ -103,7 +104,7 @@ video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
 <div id="top"><span id="hd">方位 --</span><span id="loc">現在地を取得しています…</span></div>
 <div id="msg"></div>
 <div id="hint"><span class="full">線が山とずれたら<br><b>← 指で左右になぞる →</b><br>または「自動で合わせる」</span><span class="mini">？ ずれの直し方</span></div>
-<div id="ver">Ver 1.8</div>
+<div id="ver">Ver 1.9</div>
 <div id="bar">
   <button id="bZoom"><span>1倍</span></button>
   <button id="bList"><span>リスト</span></button>
