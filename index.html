@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>この山なぁ〜に？</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#0f1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;color:#fff;font-family:"Hiragino Sans","Noto Sans JP",sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
+#op{position:fixed;inset:0;background:#0f1a2e;overflow-y:auto;padding:max(24px,env(safe-area-inset-top)) 20px 32px;z-index:20}
+#op h1{font-size:28px;text-align:center;margin:8px 0 0}
+#op .en{text-align:center;color:#B5D4F4;font-size:14px}
+#op .sub{text-align:center;color:#ffd27a;font-size:17px;margin:4px 0 12px}
+#op .lead{font-size:14px;line-height:1.7;margin-bottom:14px;color:#dde6f3}
+#rot{position:fixed;inset:0;background:#0f1a2e;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;font-size:20px;line-height:1.6;z-index:50}
+@media (orientation:landscape) and (max-height:500px){#rot{display:flex}}
+#vd.z2{transform:scale(2)}
+#hint{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom) + 80px);text-align:center;background:rgba(15,26,46,.82);border-radius:10px;padding:8px 10px;font-size:13px;line-height:1.55;z-index:6;display:none}
+#hint b{color:#ffd27a;font-weight:normal}
+#hint.min{left:auto;right:12px;padding:6px 12px}
+#hint.min .full{display:none}#hint:not(.min) .mini{display:none}
+#bAuto{background:#EF9F27!important;color:#412402!important;border-radius:8px;padding:2px 10px!important;line-height:1.25}
+body[data-rot="90"] #hint,body[data-rot="-90"] #hint{display:none!important}
+#cv{touch-action:none}
+#bar button span{display:inline-block;transition:transform .25s}
+body[data-rot="90"] #bar button span{transform:rotate(90deg)}
+body[data-rot="-90"] #bar button span{transform:rotate(-90deg)}
+body[data-rot="90"] #top,body[data-rot="-90"] #top,body[data-rot="90"] #ver,body[data-rot="-90"] #ver{visibility:hidden}
+#bQuit{background:#A32D2D!important;border-radius:8px}
+#bZoom{border:1px solid #fff!important;border-radius:8px}
+#op .art{display:block;margin:0 auto 18px;width:220px}
+#op .box{background:rgba(255,255,255,.08);border-radius:10px;padding:14px;font-size:14px;line-height:1.7;margin-bottom:14px}
+#op .box b{display:block;color:#ffd27a;margin-bottom:4px}
+#go{display:block;width:100%;padding:16px;font-size:18px;border:0;border-radius:12px;background:#ffb830;color:#2a1a00;font-weight:bold;margin-top:8px}
+#op .cr{text-align:center;color:#888780;font-size:12px;margin-top:16px}
+video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
+#cv{position:fixed;inset:0;width:100%;height:100%}
+#top{position:fixed;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;background:rgba(0,0,0,.5);display:flex;justify-content:space-between;font-size:14px;z-index:5;gap:8px;font-size:13px}
+#loc{text-align:right}
+#msg{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom) + 160px);text-align:center;background:rgba(0,0,0,.7);border-radius:10px;padding:14px;font-size:15px;line-height:1.6;z-index:6;display:none}
+#bar{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(env(safe-area-inset-bottom) + 12px);background:rgba(0,0,0,.55);display:flex;justify-content:space-around;align-items:center;z-index:5}
+#bar button{background:none;border:0;color:#fff;font-size:13px;min-width:64px;min-height:44px}
+.panel{position:fixed;left:0;right:0;bottom:0;max-height:70%;overflow-y:auto;background:rgba(15,26,46,.97);border-radius:16px 16px 0 0;padding:16px 16px calc(env(safe-area-inset-bottom) + 16px);z-index:10;display:none}
+.panel h2{font-size:17px;margin-bottom:10px}
+.panel .x{position:absolute;right:10px;top:8px;background:none;border:0;color:#fff;font-size:26px;width:44px;height:44px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:15px}
+.row small{color:#bcd}
+.adj{display:flex;gap:8px;align-items:center}
+.adj button{width:48px;height:44px;border-radius:8px;border:1px solid #5b7bb0;background:#1c2c4a;color:#fff;font-size:16px}
+.adj span{min-width:64px;text-align:center}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;height:44px;border-radius:8px;border:1px solid #5b7bb0;background:#1c2c4a;color:#fff;font-size:15px}
+.seg button.on{background:#ffb830;color:#2a1a00;border-color:#ffb830}
+.note{font-size:12px;color:#9bb;line-height:1.6;margin-top:10px}
+#ver{position:fixed;right:8px;bottom:calc(env(safe-area-inset-bottom) + 72px);font-size:11px;color:rgba(255,255,255,.6);z-index:4}
+</style>
+</head>
+<body>
+
+<div id="op">
+  <svg class="art" viewBox="0 0 120 120" aria-hidden="true" style="width:120px">
+    <rect width="120" height="120" rx="26" fill="#185FA5"/>
+    <path d="M14 86 L34 68 L48 76 L66 48 L80 62 L94 56 L106 70" fill="none" stroke="#FAC775" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M16 34 V18 H32 M88 18 H104 V34 M104 86 V102 H88 M32 102 H16 V86" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    <line x1="66" y1="46" x2="66" y2="38" stroke="#fff" stroke-width="2"/>
+    <rect x="46" y="26" width="40" height="12" rx="3" fill="#fff"/>
+  </svg>
+  <h1>この山なぁ〜に？™</h1>
+  <p class="en" style="margin-bottom:14px">Kono Yama Naani?</p>
+  <p class="lead">現在地から見える山の形（稜線）と、山の名前・標高・距離をスマホ画面に表示します。</p>
+
+  <div class="box"><b>注意</b>
+  歩きながら・運転しながら画面を見ないでください。周りの安全と足もとに気をつけてご利用ください。</div>
+
+  <div class="box"><b>免責</b>
+  本アプリは無料で提供しており、表示の正確さ・動作を保証するものではありません。本アプリの使用または使用できなかったことにより生じた事故・損害・トラブル等について、作者は一切の責任を負いません。走行中は本アプリの操作・注視をせず、交通ルールを守って安全運転でご利用ください。</div>
+
+  <div class="box"><b>利用条件</b>
+  アプリそのものの無断での再配布・改変・販売はご遠慮ください。スクリーンショットやリンクでの紹介は自由です。</div>
+
+  <div class="box"><b>表示について</b>
+  ・稜線と山名は、地形データから計算した目安です。木・建物・天気は反映されません。<br>
+  ・スマホの方位センサーは数度ずれることがあります。黄色い線が山の形とずれているときは、画面を指で左右になぞって合わせてください。<br>
+  ・使う前にスマホを空中で「8の字」に何回か大きく動かすと、方位のずれが小さくなります。車や鉄のものからは離れて使ってください。<br>
+  ・山名をタップすると、ふりがな付きで大きく表示します。<br>
+  ・表示する山は、今いる場所から100km以内の主な山です。<br>
+  ・カメラ、位置情報、方位センサーを使います。読み込みにはインターネット接続が必要です。<br>
+  ・標高：国土地理院 標高タイル／山名：国土地理院「日本の山岳標高一覧（1003山）」</div>
+
+  <button id="go">同意してスタート</button>
+  <p class="cr">Ver 1.8　この山なぁ〜に？™ © 2026 1970 OTOCHAN</p>
+</div>
+<div id="rot">画面の自動回転をオフにしてください<br><small>（横に持っても使えます）</small></div>
+
+<video id="vd" playsinline muted autoplay></video>
+<canvas id="cv"></canvas>
+<div id="top"><span id="hd">方位 --</span><span id="loc">現在地を取得しています…</span></div>
+<div id="msg"></div>
+<div id="hint"><span class="full">線が山とずれたら<br><b>← 指で左右になぞる →</b><br>または「自動で合わせる」</span><span class="mini">？ ずれの直し方</span></div>
+<div id="ver">Ver 1.8</div>
+<div id="bar">
+  <button id="bZoom"><span>1倍</span></button>
+  <button id="bList"><span>リスト</span></button>
+  <button id="bAuto"><span>自動で<br>合わせる</span></button>
+  <button id="bQuit"><span>終了</span></button>
+</div>
+
+<div class="panel" id="pList">
+  <button class="x" data-close>×</button>
+  <h2>見えている山（近い順）</h2>
+  <div id="list"></div>
+</div>
+
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const D2R=Math.PI/180,R2D=180/Math.PI,RE=6371000,K=0.13;
+const ld=(k,d)=>{try{const v=localStorage.getItem('ync_'+k);return v===null?d:JSON.parse(v)}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem('ync_'+k,JSON.stringify(v))}catch(e){}};
+let cfg={h:0,p:0,f:52,r:100};
+let zoom=1,pos=null,calcPos=null,obsH=0,sky=null,peaks=[];
+let head=null,pitch=0,roll=0,sx=0,sy=0;
+const cv=$('cv'),ctx=cv.getContext('2d'),vd=$('vd');
+const msg=t=>{const m=$('msg');if(t){m.textContent=t;m.style.display='block'}else m.style.display='none'};
+
+/* ---------- 標高タイル ---------- */
+const tiles=new Map();
+function tileURL(z,x,y){return `https://cyberjapandata.gsi.go.jp/xyz/dem_png/${z}/${x}/${y}.png`}
+function loadTile(z,x,y){
+  const key=z+'/'+x+'/'+y;
+  if(tiles.has(key))return Promise.resolve();
+  return new Promise(res=>{
+    const im=new Image();im.crossOrigin='anonymous';
+    im.onload=()=>{
+      const c=document.createElement('canvas');c.width=c.height=256;
+      const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0);
+      const d=g.getImageData(0,0,256,256).data,a=new Float32Array(65536);
+      for(let i=0;i<65536;i++){const v=d[i*4]*65536+d[i*4+1]*256+d[i*4+2];a[i]=v<8388608?v*0.01:(v===8388608?0:(v-16777216)*0.01)}
+      tiles.set(key,a);res();
+    };
+    im.onerror=()=>{tiles.set(key,null);res()};
+    im.src=tileURL(z,x,y);
+  });
+}
+function px(lat,lon,z){const n=256*2**z;const s=Math.sin(lat*D2R);return[(lon+180)/360*n,(0.5-Math.log((1+s)/(1-s))/(4*Math.PI))*n]}
+function hAt(lat,lon,z){
+  const[X,Y]=px(lat,lon,z);const tx=Math.floor(X/256),ty=Math.floor(Y/256);
+  const a=tiles.get(z+'/'+tx+'/'+ty);if(!a)return 0;
+  let fx=X-tx*256-0.5,fy=Y-ty*256-0.5;fx=Math.min(254.999,Math.max(0,fx));fy=Math.min(254.999,Math.max(0,fy));
+  const ix=fx|0,iy=fy|0,dx=fx-ix,dy=fy-iy,i=iy*256+ix;
+  return a[i]*(1-dx)*(1-dy)+a[i+1]*dx*(1-dy)+a[i+256]*(1-dx)*dy+a[i+257]*dx*dy;
+}
+function sectorTiles(lat,lon,a0,a1,R){
+  const set=new Set();
+  for(let az=a0;az<=a1+0.01;az+=1){
+    for(let d=0;d<=Math.min(R,16000);d+=1500){const[la,lo]=dest(lat,lon,az,d);const[X,Y]=px(la,lo,12);set.add('12/'+Math.floor(X/256)+'/'+Math.floor(Y/256))}
+    for(let d=14000;d<=R+3000;d+=6000){const[la,lo]=dest(lat,lon,az,d);const[X,Y]=px(la,lo,10);set.add('10/'+Math.floor(X/256)+'/'+Math.floor(Y/256))}
+  }
+  return[...set].map(k=>k.split('/').map(Number));
+}
+async function loadTiles(list,label){
+  let done=0,i=0;
+  const work=async()=>{while(i<list.length){const t=list[i++];await loadTile(...t);done++;status=`${label}を読み込み中… 地形 ${done}/${list.length}`}};
+  await Promise.all(Array.from({length:8},work));
+}
+const NEAR=15000;
+const hg=(lat,lon,d)=>hAt(lat,lon,d<NEAR?12:10);
+function dest(lat,lon,az,d){const c=d/RE,la=lat*D2R,b=az*D2R;const la2=Math.asin(Math.sin(la)*Math.cos(c)+Math.cos(la)*Math.sin(c)*Math.cos(b));const lo2=lon*D2R+Math.atan2(Math.sin(b)*Math.sin(c)*Math.cos(la),Math.cos(c)-Math.sin(la)*Math.sin(la2));return[la2*R2D,lo2*R2D]}
+const ang=(h,d)=>Math.atan((h-obsH-d*d/(2*RE)*(1-K))/d)*R2D;
+const BIN=250;
+function march(lat,lon,az,maxD,prof){
+  let m=-90,d=60,b=0;
+  while(d<maxD){const[a,c]=dest(lat,lon,az,d);const e=ang(hg(a,c,d),d);if(e>m)m=e;
+    if(prof){const nb=Math.floor(d/BIN);while(b<=nb&&b<prof.length){prof[b++]=m}}
+    d+=Math.max(25,d*0.006)}
+  if(prof)while(b<prof.length)prof[b++]=m;
+  return m;
+}
+function distAz(lat1,lon1,lat2,lon2){
+  const p1=lat1*D2R,p2=lat2*D2R,dl=(lon2-lon1)*D2R;
+  const a=Math.sin((p2-p1)/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;
+  const d=2*RE*Math.asin(Math.sqrt(a));
+  const az=(Math.atan2(Math.sin(dl)*Math.cos(p2),Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl))*R2D+360)%360;
+  return[d,az];
+}
+
+/* ---------- 山名：国土地理院「日本の山岳標高一覧（1003山）」をアプリに内蔵 ---------- */
+let ALL=null;
+async function loadPeaks(){
+  if(ALL)return ALL;
+  try{const r=await fetch('peaks.json',{cache:'no-store'});ALL=(await r.json()).map(([name,lat,lon,ele,yomi,pk,pky,pref])=>({name,lat,lon,ele,yomi,pk,pky,pref}))}catch(e){ALL=[]}
+  return ALL;
+}
+
+/* ---------- 計算：向いている方角から45°ずつ順番に ---------- */
+let gen=0,status='';
+const SECN=['北〜北東','北東〜東','東〜南東','南東〜南','南〜南西','南西〜西','西〜北西','北西〜北'];
+async function compute(){
+  if(!pos)return;
+  const my=++gen;
+  const{lat,lon}=pos,R=cfg.r*1000;
+  calcPos={lat,lon};
+  status='現在地の高さを調べています…';
+  for(let w=0;w<30&&head===null;w++)await new Promise(r=>setTimeout(r,100));
+  const h0=head===null?0:(head+cfg.h+360)%360;
+  await loadTile(12,...px(lat,lon,12).map(v=>Math.floor(v/256)));
+  if(my!==gen)return;
+  obsH=hAt(lat,lon,12)+1.6;
+  sky=new Float32Array(720).fill(NaN);peaks=[];
+  const order=[0,1,2,3,4,5,6,7].sort((a,b)=>Math.abs(wrap(a*45+22.5-h0))-Math.abs(wrap(b*45+22.5-h0)));
+  const pkAll=await loadPeaks();
+  const nb=Math.ceil(R/BIN)+1,prof=new Array(720);
+  for(let n=0;n<8;n++){
+    const sec=order[n],a0=sec*45,a1=a0+45,label=`${SECN[sec]}の山（${n+1}/8）`;
+    status=`${label}を読み込み中…`;
+    await loadTiles(sectorTiles(lat,lon,a0,a1,R),label);
+    if(my!==gen)return;
+    status=`${label}を計算中…`;
+    await new Promise(r=>setTimeout(r,0));
+    for(let i=a0*2;i<a1*2;i++){prof[i]=new Float32Array(nb);sky[i]=march(lat,lon,i/2,R,prof[i])}
+    const add=[];
+    for(const p of pkAll){
+      const[d,az]=distAz(lat,lon,p.lat,p.lon);if(d<300||d>R||az<a0||az>=a1)continue;
+      const a=ang(p.ele,d),pr=prof[Math.round(az*2)%720],block=pr?pr[Math.min(pr.length-1,Math.floor(d*0.97/BIN))]:-90;
+      if(a>=block-0.05)add.push({...p,h:p.ele,d,az,a});
+    }
+    if(my!==gen)return;
+    peaks=peaks.concat(add);
+  }
+  status='';
+  if(!pkAll.length){msg('山の名前データを読み込めませんでした（稜線のみ表示）。');setTimeout(()=>msg(''),6000)}
+}
+
+/* ---------- センサー ---------- */
+function onOri(e,abs){
+  let a=e.alpha;
+  if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null)a=360-e.webkitCompassHeading;
+  else if(!abs&&!e.absolute)return;
+  if(a===null||e.beta===null)return;
+  const A=a*D2R,B=e.beta*D2R,G=e.gamma*D2R;
+  const cA=Math.cos(A),sA=Math.sin(A),cB=Math.cos(B),sB=Math.sin(B),cG=Math.cos(G),sG=Math.sin(G);
+  const vx=-(cG*sA*sB+cA*sG),vy=-(sA*sG-cA*cG*sB),vz=-(cB*cG);
+  const hd=Math.atan2(vx,vy);
+  sx=sx*0.8+Math.sin(hd)*0.2;sy=sy*0.8+Math.cos(hd)*0.2;
+  head=(Math.atan2(sx,sy)*R2D+360)%360;
+  const pt=Math.asin(Math.max(-1,Math.min(1,vz)))*R2D;pitch=pitch*0.8+pt*0.2;
+  const rl=Math.atan2(cB*sG,sB);roll=roll*0.8+rl*0.2;
+}
+function startSensors(){
+  if('ondeviceorientationabsolute' in window)addEventListener('deviceorientationabsolute',e=>onOri(e,true));
+  else addEventListener('deviceorientation',e=>onOri(e,false));
+}
+
+/* ---------- 描画 ---------- */
+const DIRS=['北','北北東','北東','東北東','東','東南東','南東','南南東','南','南南西','南西','西南西','西','西北西','北西','北北西'];
+const dirName=a=>DIRS[Math.round(a/22.5)%16];
+const wrap=d=>((d+540)%360)-180;
+function resize(){const r=devicePixelRatio||1;cv.width=innerWidth*r;cv.height=innerHeight*r;ctx.setTransform(r,0,0,r,0,0)}
+addEventListener('resize',resize);
+let shown=[];
+let running=false,land=0,hits=[],selKey=null;
+function placeText(p){
+  const key=p.lat+','+p.lon,m=muni[key];
+  if(m===undefined){lookupMuni(p);return p.pref+' …'}
+  if(!m)return p.pref;
+  return p.pref.includes('・')?`${p.pref}（山頂：${m}）`:(m.startsWith(p.pref)?m.replace(p.pref,p.pref+' '):`${p.pref} ${m}`);
+}
+function drawBig({p,x,ly},W,H){
+  const l1=p.yomi,l2=p.name,l3=p.pk?`山頂：${p.pk}（${p.pky}）`:'',lp=placeText(p),l4=`標高${p.h}m・${p.d<10000?(p.d/1000).toFixed(1):Math.round(p.d/1000)}km・${dirName(p.az)}`;
+  ctx.font='bold 24px sans-serif';let w=ctx.measureText(l2).width;ctx.font='14px sans-serif';
+  w=Math.max(w,ctx.measureText(l1).width,ctx.measureText(l3).width,ctx.measureText(l4).width,ctx.measureText(lp).width+24)+32;
+  const h=l3?146:126,bx=Math.max(-W/2+8,Math.min(W/2-8-w,x-w/2)),by=Math.max(-H/2+60,ly-h);
+  ctx.fillStyle='rgba(15,26,46,.94)';ctx.strokeStyle='#ffb830';ctx.lineWidth=2;
+  ctx.beginPath();ctx.roundRect(bx,by,w,h,10);ctx.fill();ctx.stroke();
+  ctx.textAlign='center';const mx=bx+w/2;
+  ctx.fillStyle='#ffd27a';ctx.font='14px sans-serif';ctx.fillText(l1,mx,by+24);
+  ctx.fillStyle='#fff';ctx.font='bold 24px sans-serif';ctx.fillText(l2,mx,by+54);
+  ctx.font='13px sans-serif';let yy=by+78;
+  if(l3){ctx.fillStyle='#dde6f3';ctx.fillText(l3,mx,yy);yy+=26}
+  const pw=ctx.measureText(lp).width+24;ctx.fillStyle='#1c2c4a';ctx.beginPath();ctx.roundRect(mx-pw/2,yy-16,pw,24,12);ctx.fill();
+  ctx.fillStyle='#9FE1CB';ctx.fillText(lp,mx,yy+1);
+  ctx.fillStyle='#d3d1c7';ctx.fillText(l4,mx,by+h-12);
+}
+/* ---------- 市町村名：国土地理院の住所検索で山頂の市町村を調べる ---------- */
+const muni={};let muniJs=null;
+function loadMuniJs(){
+  if(muniJs)return muniJs;
+  muniJs=new Promise(res=>{window.GSI=window.GSI||{};const sc=document.createElement('script');sc.src='https://maps.gsi.go.jp/js/muni.js';sc.onload=()=>res(true);sc.onerror=()=>res(false);document.head.appendChild(sc)});
+  return muniJs;
+}
+async function lookupMuni(p){
+  const key=p.lat+','+p.lon;if(key in muni)return;muni[key]=undefined;
+  try{const c=localStorage.getItem('ync_muni_'+key);if(c!==null){muni[key]=c;return}}catch(e){}
+  muni[key]=null;
+  let name='';
+  try{
+    const[ok,r]=await Promise.all([loadMuniJs(),fetch(`https://mreversegeocoder.gsi.go.jp/reverse-geocoder/LonLatToAddress?lat=${p.lat}&lon=${p.lon}`).then(r=>r.json())]);
+    const cd=r&&r.results&&r.results.muniCd;
+    const v=ok&&cd&&window.GSI&&GSI.MUNI_ARRAY&&GSI.MUNI_ARRAY[String(parseInt(cd,10))];
+    if(v){const a=v.split(',');name=(a[1]+a[3]).replace(/[\s　]+/g,'')}
+  }catch(e){}
+  muni[key]=name;
+  if(name)try{localStorage.setItem('ync_muni_'+key,name)}catch(e){}
+}
+function draw(){
+  if(!running)return;requestAnimationFrame(draw);
+  const W=innerWidth,H=innerHeight;ctx.clearRect(0,0,W,H);
+  if(head===null)return;
+  const ar=Math.abs(roll)*R2D,nl=ar>55?(roll>0?-1:1):(ar<35?0:land);
+  if(nl!==land){land=nl;document.body.dataset.rot=String(land*90)}
+  const fov=cfg.f/zoom,hd=(head+cfg.h+360)%360,pt=pitch+cfg.p,ppd=W/fov,cx=W/2,cy=H/2;
+  $('hd').textContent=`${dirName(hd)} ${Math.round(hd)}°`+(cfg.h?`　${autoAdj?'自動補正':'補正'} ${cfg.h>0?'+':''}${cfg.h.toFixed(1)}°`:'');
+  if(!sky){$('loc').textContent=status||'現在地を取得しています…';return}
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(-roll);
+  const X=az=>wrap(az-hd)*ppd,Y=e=>-(e-pt)*ppd;
+  const half=fov*Math.max(1,H/W)*0.75+4;
+  ctx.beginPath();let first=true;
+  for(let d=-half;d<=half;d+=0.5){const az=(Math.round((hd+d)*2)/2+360)%360;const e=sky[Math.round(az*2)%720];if(isNaN(e)){first=true;continue}const x=X(az),y=Y(e);if(first){ctx.moveTo(x,y);first=false}else ctx.lineTo(x,y)}
+  ctx.lineWidth=5;ctx.strokeStyle='rgba(0,0,0,.35)';ctx.stroke();
+  ctx.lineWidth=2.5;ctx.strokeStyle='#ffc23a';ctx.stroke();
+  const inView=peaks.filter(p=>Math.abs(wrap(p.az-hd))<half);
+  inView.sort((a,b)=>(b.h-b.d/50)-(a.h-a.d/50));
+  ctx.font='bold 14px sans-serif';
+  const placed=[];shown=[];hits=[];
+  for(const p of inView){
+    const x=X(p.az),y=Y(p.a);
+    const t1=p.pk?`${p.name}（${p.pk}）`:p.name,t2=`${Math.round(p.h)}m・${p.d<10000?(p.d/1000).toFixed(1):Math.round(p.d/1000)}km`;
+    const w=Math.max(ctx.measureText(t1).width,ctx.measureText(t2).width*0.85)+14;
+    const skyY=Y(sky[Math.round(((p.az%360)+360)%360*2)%720]),base=Math.min(y,isNaN(skyY)?y:skyY);
+    let ly=null;
+    for(let r=0;r<6;r++){const t=base-40-r*44,R4=[x-w/2-4,t-42,x+w/2+4,t+2];
+      if(placed.every(q=>R4[2]<q[0]||R4[0]>q[2]||R4[3]<q[1]||R4[1]>q[3])){placed.push(R4);ly=t;break}}
+    if(ly===null)continue;
+    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,y-3);ctx.lineTo(x,ly);ctx.stroke();
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-5,y-8);ctx.lineTo(x+5,y-8);ctx.fill();
+    ctx.fillStyle='rgba(0,0,0,.62)';ctx.beginPath();ctx.roundRect(x-w/2,ly-38,w,38,6);ctx.fill();
+    ctx.fillStyle='#fff';ctx.textAlign='center';ctx.font='bold 14px sans-serif';ctx.fillText(t1,x,ly-21);
+    ctx.fillStyle='#ffd27a';ctx.font='12px sans-serif';ctx.fillText(t2,x,ly-6);ctx.font='bold 14px sans-serif';
+    shown.push(p);hits.push({p,r:[x-w/2,ly-38,x+w/2,ly],x,ly});
+  }
+  const sel=selKey&&hits.find(h=>h.p.lat+','+h.p.lon===selKey);
+  if(sel)drawBig(sel,W,H);
+  ctx.restore();
+  const info=status||`見える山 ${shown.length}`;
+  $('loc').textContent=info;
+  if(land){
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(land*Math.PI/2);
+    const t=`${dirName(hd)} ${Math.round(hd)}°　${cfg.h?`${autoAdj?'自動補正':'補正'} ${cfg.h>0?'+':''}${cfg.h.toFixed(1)}°　`:''}${info}`;ctx.font='14px sans-serif';ctx.textAlign='left';
+    const w=ctx.measureText(t).width+20;
+    ctx.fillStyle='rgba(15,26,46,.75)';ctx.beginPath();ctx.roundRect(-H/2+10,-W/2+10,w,30,6);ctx.fill();
+    ctx.fillStyle='#fff';ctx.fillText(t,-H/2+20,-W/2+30);
+    const t2='線がずれたら ← 指で左右になぞる →';const w2=ctx.measureText(t2).width+20;
+    ctx.fillStyle='rgba(15,26,46,.75)';ctx.beginPath();ctx.roundRect(-w2/2,W/2-50,w2,30,6);ctx.fill();ctx.fillStyle='#ffd27a';ctx.textAlign='center';ctx.fillText(t2,0,W/2-30);ctx.restore();
+  }
+}
+
+/* ---------- 位置 ---------- */
+function startGPS(){
+  navigator.geolocation.watchPosition(p=>{
+    pos={lat:p.coords.latitude,lon:p.coords.longitude};
+    if(!calcPos||distAz(calcPos.lat,calcPos.lon,pos.lat,pos.lon)[0]>400)compute();
+  },()=>{$('loc').textContent='位置情報が使えません';msg('位置情報をオンにして、アプリに許可してください。')},{enableHighAccuracy:true,maximumAge:10000});
+}
+
+/* ---------- カメラ ---------- */
+async function startCam(){
+  try{const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});stream=st;vd.srcObject=st;await vd.play()}
+  catch(e){msg('カメラが使えません。カメラの使用を許可してください。')}
+}
+function stopCam(){try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(e){}stream=null;vd.srcObject=null}
+/* ほかのアプリに切り替えたらカメラを止め、戻ってきたらつけ直す */
+document.addEventListener('visibilitychange',async()=>{
+  if(!running&&!paused)return;
+  if(document.hidden){if(running){paused=true;running=false;stopCam()}}
+  else if(paused){paused=false;cfg.h=0;cfg.p=0;autoAdj=false;selKey=null;await startCam();running=true;draw();
+    if(pos&&calcPos&&distAz(calcPos.lat,calcPos.lon,pos.lat,pos.lon)[0]>400)compute()}
+});
+let paused=false;
+
+/* ---------- 開始 ---------- */
+let started=false;
+$('go').onclick=async()=>{
+  try{if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==='function')await DeviceOrientationEvent.requestPermission()}catch(e){}
+  $('op').style.display='none';resize();
+  await startCam();
+  if(!started){startSensors();startGPS();started=true}running=true;$('hint').style.display='block';draw();
+  try{screen.orientation.lock('portrait')}catch(e){}
+};
+
+/* ---------- パネル ---------- */
+const open=id=>{document.querySelectorAll('.panel').forEach(p=>p.style.display='none');$(id).style.display='block'};
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.parentElement.style.display='none');
+$('bList').onclick=()=>{
+  const l=[...peaks].sort((a,b)=>a.d-b.d).slice(0,80);
+  $('list').innerHTML=l.length?l.map(p=>`<div class="row"><span>${p.name}${p.pk?'（'+p.pk+'）':''}<br><small>${p.yomi}・${Math.round(p.h)}m</small></span><small>${dirName(p.az)}・${(p.d/1000).toFixed(1)}km</small></div>`).join(''):'<p class="note">まだ計算中か、見える山が見つかりません。</p>';
+  open('pList');
+};
+
+/* ---------- 指でなぞって補正・タップで拡大 ---------- */
+let tp=null;
+const toFrame=(px,py)=>{const dx=px-innerWidth/2,dy=py-innerHeight/2,c=Math.cos(roll),s=Math.sin(roll);return[dx*c-dy*s,dx*s+dy*c]};
+cv.addEventListener('pointerdown',e=>{tp={x:e.clientX,y:e.clientY,h:cfg.h,moved:false};cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!tp)return;
+  const dx=e.clientX-tp.x,dy=e.clientY-tp.y;if(!tp.moved&&Math.hypot(dx,dy)<10)return;tp.moved=true;
+  const c=Math.cos(roll),s=Math.sin(roll),dw=dx*c-dy*s,ppd=innerWidth/(cfg.f/zoom);
+  cfg.h=Math.round((tp.h-dw/ppd)*10)/10;autoAdj=false});
+cv.addEventListener('pointerup',e=>{if(!tp)return;const m=tp.moved;tp=null;if(m)return;
+  const[fx,fy]=toFrame(e.clientX,e.clientY);
+  const h=hits.slice().reverse().find(({r})=>fx>=r[0]-6&&fx<=r[2]+6&&fy>=r[1]-6&&fy<=r[3]+6);
+  const k=h?h.p.lat+','+h.p.lon:null;selKey=(k&&k!==selKey)?k:null});
+$('hint').onclick=()=>$('hint').classList.toggle('min');
+$('hd').onclick=()=>{cfg.h=0;cfg.p=0;autoAdj=false};
+
+/* ---------- 自動で合わせる：カメラ映像の空と山の境目に稜線を合わせる ---------- */
+let autoAdj=false;
+function grab(){
+  const W=innerWidth,H=innerHeight,k=Math.min(2,devicePixelRatio||1),c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);
+  const g=c.getContext('2d',{willReadFrequently:true});
+  if(!vd.videoWidth)return null;
+  const sc=Math.max(c.width/vd.videoWidth,c.height/vd.videoHeight)*zoom,w=vd.videoWidth*sc,h=vd.videoHeight*sc;
+  g.drawImage(vd,(c.width-w)/2,(c.height-h)/2,w,h);
+  const d=g.getImageData(0,0,c.width,c.height).data,L=new Float32Array(c.width*c.height);
+  for(let i=0;i<L.length;i++)L[i]=d[i*4]*0.3+d[i*4+1]*0.59+d[i*4+2]*0.11;
+  return{L,w:c.width,h:c.height,k};
+}
+function autoAlign(){
+  if(!sky||head===null){msg('計算が終わってからお試しください。');setTimeout(()=>msg(''),3000);return}
+  const G=grab();if(!G){msg('カメラの映像が取得できません。');setTimeout(()=>msg(''),3000);return}
+  const W=innerWidth,H=innerHeight,cx=W/2,cy=H/2,fov=cfg.f/zoom,ppd=W/fov,hd=head+cfg.h,pt=pitch+cfg.p;
+  const cr=Math.cos(-roll),sr=Math.sin(-roll),span=Math.abs(roll)>0.8?H:W;
+  const Lat=(fx,fy)=>{const sx=(cx+fx*cr-fy*sr)*G.k,sy=(cy+fx*sr+fy*cr)*G.k;const x=sx|0,y=sy|0;if(x<0||y<0||x>=G.w||y>=G.h)return NaN;return G.L[y*G.w+x]};
+  const skyAt=az=>sky[Math.round((((az%360)+360)%360)*2)%720];
+  const cols=[];
+  for(let fx=-span/2+10;fx<span/2-10;fx+=3){
+    const yp=-(skyAt(hd+fx/ppd)-pt)*ppd;if(isNaN(yp))continue;
+    let best=0,by=NaN;
+    for(let fy=yp-160;fy<=yp+160;fy+=1){
+      const a=(Lat(fx,fy-3)+Lat(fx,fy-2)+Lat(fx,fy-1))/3,b=(Lat(fx,fy+1)+Lat(fx,fy+2)+Lat(fx,fy+3))/3,dv=a-b;
+      if(dv>best){best=dv;by=fy}
+    }
+    if(best>14)cols.push([fx,by]);
+  }
+  if(cols.length<25){msg('山の輪郭が見つかりませんでした。指でなぞって合わせてください。');setTimeout(()=>msg(''),4000);return}
+  let top={sc:1e9,d:0,v:0};
+  for(let dlt=-15;dlt<=15;dlt+=0.2){
+    const diff=[];
+    for(const[fx,y]of cols){const yp=-(skyAt(hd+dlt+fx/ppd)-pt)*ppd;if(!isNaN(yp))diff.push(y-yp)}
+    if(diff.length<cols.length*0.8)continue;
+    const sd=diff.slice().sort((a,b)=>a-b),med=sd[sd.length>>1];
+    let sc=0;for(const v of diff)sc+=Math.min(Math.abs(v-med),12);sc/=diff.length;
+    if(sc<top.sc-0.02||(Math.abs(sc-top.sc)<=0.02&&Math.abs(dlt)<Math.abs(top.d)))top={sc,d:dlt,v:med};
+  }
+  if(top.sc>4){msg('山の輪郭とうまく合いませんでした。指でなぞって合わせてください。');setTimeout(()=>msg(''),4000);return}
+  if(Math.abs(top.d)<0.05)top.d=0;
+  cfg.h=Math.round((cfg.h+top.d)*10)/10;cfg.p=Math.round((cfg.p+top.v/ppd)*100)/100;autoAdj=true;
+  msg(`自動で合わせました（${top.d>=0?'+':''}${top.d.toFixed(1)}°）。ずれていたら指でなぞって直してください。`);setTimeout(()=>msg(''),3500);
+}
+$('bAuto').onclick=autoAlign;
+
+/* ---------- ズーム・終了 ---------- */
+$('bZoom').onclick=()=>{zoom=zoom===1?2:1;vd.classList.toggle('z2',zoom===2);$('bZoom').firstChild.textContent=zoom+'倍'};
+let stream=null;
+$('bQuit').onclick=()=>{paused=false;cfg.h=0;cfg.p=0;autoAdj=false;$('hint').style.display='none';selKey=null;try{stream&&stream.getTracks().forEach(t=>t.stop())}catch(e){}vd.srcObject=null;running=false;document.querySelectorAll('.panel').forEach(p=>p.style.display='none');msg('');$('op').style.display='block';$('op').scrollTop=0};
+
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
