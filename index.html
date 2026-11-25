@@ -95,7 +95,7 @@ video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
   ・標高：国土地理院 標高タイル／山名：国土地理院「日本の山岳標高一覧（1003山）」</div>
 
   <button id="go">同意してスタート</button>
-  <p class="cr">Ver 2.0　やまスコープ™ © 2026 1970 OTOCHAN</p>
+  <p class="cr">Ver 2.1　やまスコープ™ © 2026 1970 OTOCHAN</p>
 </div>
 <div id="rot">画面の自動回転をオフにしてください<br><small>（横に持っても使えます）</small></div>
 
@@ -104,7 +104,7 @@ video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
 <div id="top"><span id="hd">方位 --</span><span id="loc">現在地を取得しています…</span></div>
 <div id="msg"></div>
 <div id="hint"><span class="full">線が山とずれたら<br><b>← 指で左右になぞる →</b><br>または「自動で合わせる」</span><span class="mini">？ ずれの直し方</span></div>
-<div id="ver">Ver 2.0</div>
+<div id="ver">Ver 2.1</div>
 <div id="bar">
   <button id="bZoom"><span>1倍</span></button>
   <button id="bList"><span>リスト</span></button>
@@ -473,5 +473,6 @@ $('bQuit').onclick=()=>{paused=false;cfg.h=0;cfg.p=0;autoAdj=false;$('hint').sty
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "e75f1ba2a4504431bdc7f3ccb9d2206a"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

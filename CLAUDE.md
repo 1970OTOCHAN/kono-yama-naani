@@ -7,7 +7,8 @@
 
 - 公開先：GitHub Pages https://1970otochan.github.io/kono-yama-naani/
 - ファイル：index.html、manifest.json、sw.js、peaks.json（山名データ）、icon-192.png、icon-512.png
-- 現在のバージョン：Ver 2.0（2026-11-25、アプリ名を「やまスコープ™」に変更。英語表記 Yama Scope、サブタイトルなし）
+- 現在のバージョン：Ver 2.1（2026-11-25、アクセス数の計測を追加。Cloudflare Web Analytics を index.html の最後に入れた。ほかのアプリと同じ計測コード。見た目は変更なし。数は「アプリ利用回数」で見る）
+  - Ver 2.0（2026-11-25、アプリ名を「やまスコープ™」に変更。英語表記 Yama Scope、サブタイトルなし）
   - Ver 1.9（2026-11-25、横持ちのとき操作パネルをどちらに倒しても右側に表示）
   - Ver 1.8（2026-11-24、やまスコープの倉庫 fuji-finder の namae フォルダから引っ越し）
 
