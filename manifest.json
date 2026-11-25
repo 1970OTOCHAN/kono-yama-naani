@@ -1,6 +1,6 @@
 {
-  "name": "この山なぁ〜に？",
-  "short_name": "この山なぁ〜に？",
+  "name": "やまスコープ",
+  "short_name": "やまスコープ",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",
